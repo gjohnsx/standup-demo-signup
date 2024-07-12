@@ -84,6 +84,15 @@ export function ScheduleClient({
   const [selectedWeek, setSelectedWeek] = useState(currentWeek);
 
   useEffect(() => {
+    const pollInterval = setInterval(async () => {
+      const updatedSchedule = await getScheduleForWeek(currentWeek);
+      setSchedule(updatedSchedule);
+    }, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [currentWeek]);
+
+  useEffect(() => {
     const fetchSchedule = async () => {
       const newSchedule = await getScheduleForWeek(selectedWeek);
       setSchedule(newSchedule);
