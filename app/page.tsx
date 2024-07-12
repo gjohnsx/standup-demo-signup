@@ -1,9 +1,12 @@
 import { getScheduleForWeek } from "@/actions/actions";
 import { ScheduleClient } from "@/components/schedule-client";
-import { ScheduleServer } from "@/components/schedule-server";
 
 export default async function HomePage() {
-  const currentWeek = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const currentWeek = Math.floor(
+    (now.getTime() - startOfYear.getTime()) / (7 * 24 * 60 * 60 * 1000)
+  );
   const scheduleData = await getScheduleForWeek(currentWeek);
 
   console.log("scheduleData", scheduleData);

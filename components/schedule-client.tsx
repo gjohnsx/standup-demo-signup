@@ -37,39 +37,55 @@ interface DemoSchedule {
 
 function getWeekDateRange(weekNumber: number): string {
   const now = new Date();
-  const currentWeek = Math.floor(
-    (now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) /
-      (7 * 24 * 60 * 60 * 1000)
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
+
+  // Calculate the start of the selected week
+  const startOfSelectedWeek = new Date(
+    startOfYear.getTime() + weekNumber * millisecondsPerWeek
   );
-  const diffWeeks = currentWeek - weekNumber;
-  const startDate = new Date(
-    now.getTime() - diffWeeks * 7 * 24 * 60 * 60 * 1000
+
+  // Adjust to Monday of that week
+  startOfSelectedWeek.setDate(
+    startOfSelectedWeek.getDate() - startOfSelectedWeek.getDay() + 1
   );
-  startDate.setDate(startDate.getDate() - startDate.getDay() + 1); // Set to Monday
-  const endDate = new Date(startDate.getTime() + 4 * 24 * 60 * 60 * 1000); // Friday
+
+  // Calculate Friday of the same week
+  const endOfSelectedWeek = new Date(startOfSelectedWeek);
+  endOfSelectedWeek.setDate(endOfSelectedWeek.getDate() + 4);
 
   const formatDate = (date: Date) =>
     date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  return `${formatDate(startOfSelectedWeek)} - ${formatDate(
+    endOfSelectedWeek
+  )}`;
 }
 
 function getDateForDay(weekNumber: number, dayIndex: number): string {
   const now = new Date();
-  const currentWeek = Math.floor(
-    (now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) /
-      (7 * 24 * 60 * 60 * 1000)
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
+
+  // Calculate the start of the selected week
+  const startOfSelectedWeek = new Date(
+    startOfYear.getTime() + weekNumber * millisecondsPerWeek
   );
-  const diffWeeks = currentWeek - weekNumber;
-  const startDate = new Date(
-    now.getTime() - diffWeeks * 7 * 24 * 60 * 60 * 1000
+
+  // Adjust to Monday of that week
+  startOfSelectedWeek.setDate(
+    startOfSelectedWeek.getDate() - startOfSelectedWeek.getDay() + 1
   );
-  startDate.setDate(startDate.getDate() - startDate.getDay() + 1 + dayIndex); // Set to the correct day of the week
-  return startDate.toLocaleDateString("en-US", {
+
+  // Add days to get to the correct day of the week
+  const targetDate = new Date(
+    startOfSelectedWeek.getTime() + dayIndex * 24 * 60 * 60 * 1000
+  );
+
+  return targetDate.toLocaleDateString("en-US", {
     month: "numeric",
     day: "numeric",
   });
 }
-
 export function ScheduleClient({
   initialSchedule,
   currentWeek,
