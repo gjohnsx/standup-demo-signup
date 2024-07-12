@@ -19,6 +19,7 @@ export async function addDemoSlot(
     .insert(demoSchedules)
     .values({ week, day, name, demoTitle })
     .returning();
+
   revalidatePath("/"); // Revalidate the home page
   return result[0];
 }
